@@ -9,7 +9,8 @@ jobs:
       - image: st10091991/apds7311poe2:latest  # Use your actual image
     steps:
       - checkout
-      - setup_remote_docker:  # Omit the version to use the default
+      - setup_remote_docker:  # This is essential for using Docker commands
+          version: '20.10.7'  # You can specify a version if needed, but it's optional
           docker_layer_caching: true  # Optional
       - run:
           name: Login to Docker Hub
