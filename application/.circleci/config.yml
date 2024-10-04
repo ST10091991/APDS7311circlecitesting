@@ -7,9 +7,13 @@ jobs:
       - image: "cimg/base:stable"
     steps:
       - checkout
+      - run:
+          name: Navigate to application directory
+          command: cd application  # Change to the application directory
       - node/install
       - node/install-packages
       - run:
+          name: Run tests
           command: npm run test
 workflows:
   build-and-test:
