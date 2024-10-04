@@ -17,8 +17,8 @@ const config: Config = {
 
   // Add this section to ensure Next.js specific transformations
   moduleNameMapper: {
-    "^@/(.*)$": "<rootDir>/src/$1", // Adjust based on your folder structure
-  },
+    '^@/(.*)$': '<rootDir>/src/$1', // adjust based on your folder structure
+  },  
 };
 
 export default config;

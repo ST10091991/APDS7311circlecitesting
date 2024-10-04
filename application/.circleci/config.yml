@@ -1,6 +1,9 @@
 version: 2.1
+
 orbs:
   node: circleci/node@5.1.1
+  sonarscanner: psl/sonarscanner@0.0.4  # Added SonarScanner orb
+
 jobs:
   build-and-test:
     docker:
@@ -24,7 +27,41 @@ jobs:
           command: |
             cd application
             npm run test  # Run tests
+
+  # Sonarqube scanner
+  scan:
+    docker:
+      - image: YOUR DOCKER IMAGE  # Specify your Docker image
+    working_directory: /tmp/workspace
+    environment:
+      ENV_FILE: /tmp/workspace/.circleenv
+      DOCKER_BUILDKIT: "1"
+      BUILDKIT_PROGRESS: plain
+    steps:
+      - checkout  
+      - attach_workspace:
+          at: /tmp/workspace    
+      - run:
+          name: Install Sonarqube scanner 
+          command: |
+              sudo apt-get update
+              sudo apt-get install -y openjdk-11-jdk
+              wget -O sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
+              unzip sonar-scanner.zip
+              rm sonar-scanner.zip
+      - run:
+          name: Run Sonarscanner
+          command: |
+              export PATH="$PATH:$PWD/sonar-scanner-4.6.2.2472-linux/bin"
+              sonar-scanner \
+              -Dsonar.projectKey=$CIRCLE_BRANCH:$CIRCLE_PROJECT_REPONAME \
+              -Dsonar.host.url=https://sonarqube.com/ \
+              -Dsonar.login=$SONAR_TOKEN  
+
 workflows:
-  build-and-test:
+  version: 2
+  build-and-scan:
     jobs:
-      - build-and-test
+      - build-and-test  # First job
+      - scan:           # Second job
+          context: sonarqube  # Specify context if necessary
