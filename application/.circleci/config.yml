@@ -6,12 +6,11 @@ orbs:
 jobs:
   scan:
     docker:
-      - image: myusername/mydockerimage:latest  # Ensure the correct format
+      - image: myusername/mydockerimage:latest  # Replace with your actual image
     steps:
       - checkout
       - setup_remote_docker:
-          version: 20.10.9  # Updated to a valid version
-          docker_layer_caching: true
+          docker_layer_caching: true  # Optional
       - run:
           name: Login to Docker Hub
           command: |
