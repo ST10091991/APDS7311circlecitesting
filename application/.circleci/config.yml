@@ -6,10 +6,16 @@ orbs:
 jobs:
   scan:
     docker:
-      - image: mydockerimage  # Use your actual Docker image name in lowercase
-    working_directory: /tmp/workspace
+      - image: myusername/mydockerimage:latest  # Ensure the correct format
     steps:
       - checkout
+      - setup_remote_docker:  # Optional but helps with Docker-in-Docker scenarios
+          version: 20.10.7
+          docker_layer_caching: true
+      - run:
+          name: Login to Docker Hub
+          command: |
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - run:
           name: Install Sonarqube scanner 
           command: |
