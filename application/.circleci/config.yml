@@ -8,17 +8,22 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Navigate to application directory
+          name: Navigate to application directory and list contents
           command: |
             cd application
             echo "Current Directory: $(pwd)"
             echo "List Directory Contents:"
             ls -la  # List files in the current directory
-      - node/install
-      - node/install-packages
+      - run:
+          name: Install Node.js dependencies
+          command: |
+            cd application
+            npm install  # Install dependencies
       - run:
           name: Run tests
-          command: npm run test
+          command: |
+            cd application
+            npm run test  # Run tests
 workflows:
   build-and-test:
     jobs:
