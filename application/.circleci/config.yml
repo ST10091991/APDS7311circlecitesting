@@ -9,7 +9,11 @@ jobs:
       - checkout
       - run:
           name: Navigate to application directory
-          command: cd application  # Change to the application directory
+          command: |
+            cd application
+            echo "Current Directory: $(pwd)"
+            echo "List Directory Contents:"
+            ls -la  # List files in the current directory
       - node/install
       - node/install-packages
       - run:
