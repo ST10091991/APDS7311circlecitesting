@@ -6,7 +6,7 @@ orbs:
 jobs:
   scan:
     docker:
-      - image: myusername/mydockerimage:latest  # Replace with your actual image
+      - image: st10091991/apds7311poe2:latest  # Replace with your actual image
     steps:
       - checkout
       - setup_remote_docker:
