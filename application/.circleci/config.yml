@@ -4,7 +4,7 @@ orbs:
 jobs:
   build-and-test:
     docker:
-      - image: "cimg/base:stable"
+      - image: "circleci/node:16"  # Use a Node.js image directly
     steps:
       - checkout
       - run:
