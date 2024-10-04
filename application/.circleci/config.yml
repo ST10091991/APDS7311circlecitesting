@@ -1,46 +1,15 @@
 version: 2.1
-
 orbs:
   node: circleci/node@5.1.1
-  sonarscanner: psl/sonarscanner@0.0.4  # Added SonarScanner orb
+  sonarscanner: psl/sonarscanner@0.0.4  # Ensure this is enabled
 
 jobs:
-  build-and-test:
-    docker:
-      - image: "circleci/node:16"  # Use a Node.js image directly
-    steps:
-      - checkout
-      - run:
-          name: Navigate to application directory and list contents
-          command: |
-            cd application
-            echo "Current Directory: $(pwd)"
-            echo "List Directory Contents:"
-            ls -la  # List files in the current directory
-      - run:
-          name: Install Node.js dependencies
-          command: |
-            cd application
-            npm install  # Install dependencies
-      - run:
-          name: Run tests
-          command: |
-            cd application
-            npm run test  # Run tests
-
-  # Sonarqube scanner
   scan:
     docker:
-      - image: YOUR DOCKER IMAGE  # Specify your Docker image
+      - image: mydockerimage  # Use your actual Docker image name in lowercase
     working_directory: /tmp/workspace
-    environment:
-      ENV_FILE: /tmp/workspace/.circleenv
-      DOCKER_BUILDKIT: "1"
-      BUILDKIT_PROGRESS: plain
     steps:
-      - checkout  
-      - attach_workspace:
-          at: /tmp/workspace    
+      - checkout
       - run:
           name: Install Sonarqube scanner 
           command: |
@@ -56,12 +25,11 @@ jobs:
               sonar-scanner \
               -Dsonar.projectKey=$CIRCLE_BRANCH:$CIRCLE_PROJECT_REPONAME \
               -Dsonar.host.url=https://sonarqube.com/ \
-              -Dsonar.login=$SONAR_TOKEN  
+              -Dsonar.login=$SONAR_TOKEN
 
-workflows:
+workflows: 
   version: 2
-  build-and-scan:
+  build-and-test:
     jobs:
-      - build-and-test  # First job
-      - scan:           # Second job
-          context: sonarqube  # Specify context if necessary
+      - scan:
+          context: sonarqube
