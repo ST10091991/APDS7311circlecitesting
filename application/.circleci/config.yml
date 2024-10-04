@@ -9,8 +9,8 @@ jobs:
       - image: myusername/mydockerimage:latest  # Ensure the correct format
     steps:
       - checkout
-      - setup_remote_docker:  # Optional but helps with Docker-in-Docker scenarios
-          version: 20.10.7
+      - setup_remote_docker:
+          version: 20.10.9  # Updated to a valid version
           docker_layer_caching: true
       - run:
           name: Login to Docker Hub
