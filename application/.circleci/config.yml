@@ -10,15 +10,13 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker:
-          docker_layer_caching: true  # Optional for caching
+          docker_layer_caching: true  # Optional
       - run:
-          name: Check Docker Version
-          command: docker --version  # Verify Docker is available
-      - run:
-          name: Debug Environment
+          name: Debug Docker
           command: |
             echo $PATH
             which docker
+            docker --version
       - run:
           name: Login to Docker Hub
           command: |
