@@ -10,7 +10,6 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker:
-          version: 'latest'  # Use the latest version or specify a known available version
           docker_layer_caching: true  # Optional for caching
       - run:
           name: Check Docker Version
