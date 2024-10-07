@@ -15,10 +15,13 @@ jobs:
           name: Check Docker Version
           command: docker --version  # Verify Docker is available
       - run:
+          name: Debug Environment
+          command: |
+            echo $PATH
+            which docker
+      - run:
           name: Login to Docker Hub
           command: |
-            echo "Docker Username: $DOCKER_USERNAME"
-            echo "Docker Password: (hidden for security)"
             echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - run:
           name: Install SonarQube scanner
