@@ -2,7 +2,6 @@ version: 2.1
 orbs:
   node: circleci/node@5.1.1
   sonarscanner: psl/sonarscanner@0.0.4  # Ensure this is enabled
-
 jobs:
   scan:
     docker:
@@ -37,7 +36,6 @@ jobs:
               -Dsonar.projectKey=$CIRCLE_BRANCH:$CIRCLE_PROJECT_REPONAME \
               -Dsonar.host.url=https://sonarqube.com/ \
               -Dsonar.login=$SONAR_TOKEN
-
 workflows:
   version: 2
   build-and-test:
