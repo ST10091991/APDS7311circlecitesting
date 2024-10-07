@@ -2,20 +2,20 @@ version: 2.1
 orbs:
   node: circleci/node@5.1.1
   sonarscanner: psl/sonarscanner@0.0.4  # Ensure this is enabled
+
 jobs:
   scan:
     docker:
-      - image: st10091991/apds7311poe2:latest  # Use your actual image
+      - image: circleci/python:3.8  # Use a base image that includes Docker
     steps:
       - checkout
-      - setup_remote_docker:
+      - setup_remote_docker:  # Removed specific Docker version for flexibility
           docker_layer_caching: true  # Optional
       - run:
-          name: Debug Docker
+          name: Install Docker CLI
           command: |
-            echo $PATH
-            which docker
-            docker --version
+            sudo apt-get update
+            sudo apt-get install -y docker-ce docker-ce-cli containerd.io
       - run:
           name: Login to Docker Hub
           command: |
@@ -36,6 +36,7 @@ jobs:
               -Dsonar.projectKey=$CIRCLE_BRANCH:$CIRCLE_PROJECT_REPONAME \
               -Dsonar.host.url=https://sonarqube.com/ \
               -Dsonar.login=$SONAR_TOKEN
+
 workflows:
   version: 2
   build-and-test:
