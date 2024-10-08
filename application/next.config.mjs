@@ -1,10 +1,22 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    swcMinify: true, // Enable SWC minification for faster builds
-    experimental: {
-      fontLoaders: [
-        { loader: '@next/font/google' } // Use built-in font loader if needed
-      ],
+    // Disable SWC for specific configurations if required
+    compiler: {
+      styledComponents: true, // Enables support for styled-components
+      reactRemoveProperties: true, // Strips React properties for smaller bundle size
+    },
+    webpack: (config) => {
+      config.module.rules.push({
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env'],
+          },
+        },
+      });
+      return config;
     },
   };
   
