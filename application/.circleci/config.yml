@@ -5,7 +5,7 @@ executors:
     docker:
       # Use a Node.js image since you're working with a Create React App
       - image: cimg/node:16.17
-    working_directory: ~/repo/application
+    working_directory: ~/repo
 
 jobs:
   # Job to run tests for the React app
@@ -13,6 +13,9 @@ jobs:
     executor: sonar-executor
     steps:
       - checkout
+      - run:
+        name: Navigate to app folder
+        command: cd application
       - run:
           name: Install dependencies
           command: npm install
@@ -25,6 +28,9 @@ jobs:
     executor: sonar-executor
     steps:
       - checkout
+      - run:
+        name: Navigate to app folder
+        command: cd application
       - run:
           name: Install SonarQube Scanner via npm
           command: npm install sonarqube-scanner --save-dev
