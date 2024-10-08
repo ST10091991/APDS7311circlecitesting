@@ -17,20 +17,17 @@ jobs:
             echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - run:
           name: Install SonarQube scanner
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y openjdk-11-jdk
-            wget -O sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
-            unzip sonar-scanner.zip
-            rm sonar-scanner.zip
+          command: npm install sonarqube-scanner --save-dev
       - run:
           name: Run SonarScanner
           command: |
             export PATH="$PATH:$PWD/sonar-scanner-4.6.2.2472-linux/bin"
             sonar-scanner \
               -Dsonar.projectKey=$CIRCLE_BRANCH:$CIRCLE_PROJECT_REPONAME \
+              -Dsonar.sources=src
               -Dsonar.host.url=https://sonarcloud.io/ \
               -Dsonar.login=$SONAR_TOKEN
+              -Dsonar.organization=st10091991
 
 workflows:
   version: 2
