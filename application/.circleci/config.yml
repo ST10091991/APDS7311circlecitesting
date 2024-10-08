@@ -16,6 +16,9 @@ jobs:
           command: |
             echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
       - run:
+        name: Install Dependecies
+        command: npm install
+      - run:
           name: Install SonarQube scanner
           command: npm install sonarqube-scanner --save-dev
       - run:
