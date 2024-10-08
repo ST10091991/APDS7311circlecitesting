@@ -1,45 +1,54 @@
 version: 2.1
-orbs:
-  node: circleci/node@5.1.1
-  sonarscanner: psl/sonarscanner@0.0.4  # Ensure this is enabled
+
+executors:
+  sonar-executor:
+    docker:
+      # Use a Node.js image since you're working with a Create React App
+      - image: cimg/node:16.17
+    working_directory: ~/repo
 
 jobs:
-  scan:
-    docker:
-      - image: circleci/python:3.8  # Use a base image that includes Docker
+  # Job to run tests for the React app
+  test:
+    executor: sonar-executor
     steps:
       - checkout
-      - setup_remote_docker:  # Removed specific Docker version for flexibility
-          docker_layer_caching: true  # Optional
       - run:
-          name: Install Docker CLI
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+          name: Navigate to app folder
+          command: cd application
       - run:
-          name: Login to Docker Hub
-          command: |
-            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+          name: Install dependencies
+          command: npm install
       - run:
-          name: Install SonarQube scanner
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y openjdk-11-jdk
-            wget -O sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
-            unzip sonar-scanner.zip
-            rm sonar-scanner.zip
+          name: Run Tests
+          command: npm test -- --watchAll=false
+
+  # Job to run SonarCloud analysis
+  sonar_scan:
+    executor: sonar-executor
+    steps:
+      - checkout
       - run:
-          name: Run SonarScanner
+          name: Navigate to app folder
+          command: cd application
+      - run:
+          name: Install SonarQube Scanner via npm
+          command: npm install sonarqube-scanner --save-dev
+      - run:
+          name: Run SonarCloud Analysis
           command: |
-            export PATH="$PATH:$PWD/sonar-scanner-4.6.2.2472-linux/bin"
-            sonar-scanner \
+            npx sonar-scanner \
               -Dsonar.projectKey=$CIRCLE_BRANCH:$CIRCLE_PROJECT_REPONAME \
-              -Dsonar.host.url=https://sonarqube.com/ \
-              -Dsonar.login=$SONAR_TOKEN
+              -Dsonar.sources=src \
+              -Dsonar.host.url=https://sonarcloud.io/ \
+              -Dsonar.login=$SONAR_TOKEN \
+              -Dsonar.organization=st10091991
 
 workflows:
   version: 2
-  build-and-test:
+  test_and_sonar:
     jobs:
-      - scan:
-          context: sonarqube
+      - test
+      - sonar_scan:
+          requires:
+            - test
