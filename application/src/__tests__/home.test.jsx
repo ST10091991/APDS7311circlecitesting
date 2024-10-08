@@ -1,7 +1,7 @@
 import React from 'react';
 import "@testing-library/jest-dom";
 import { render } from "@testing-library/react";
-import Home from "../src/app/page.tsx"; // Adjust the import path if needed
+import Home from "../app/page.tsx";
 console.log(Home);
 
 
