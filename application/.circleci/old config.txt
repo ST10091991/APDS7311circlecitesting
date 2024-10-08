@@ -1,0 +1,40 @@
+version: 2.1
+orbs:
+  node: circleci/node@5.1.1
+  sonarscanner: psl/sonarscanner@0.0.4  # Ensure this is enabled
+
+jobs:
+  scan:
+    docker:
+      - image: circleci/python:3.8  # Use a base image that includes Docker
+    steps:
+      - checkout
+      - setup_remote_docker:  # Removed specific Docker version for flexibility
+          docker_layer_caching: true  # Optional
+      - run:
+        name: Login to Docker Hub
+        command: |
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      - run:
+        name: Install Dependecies
+        command: npm install
+      - run:
+          name: Install SonarQube scanner
+          command: npm install sonarqube-scanner --save-dev
+      - run:
+          name: Run SonarScanner
+          command: |
+            export PATH="$PATH:$PWD/sonar-scanner-4.6.2.2472-linux/bin"
+            sonar-scanner \
+              -Dsonar.projectKey=$CIRCLE_BRANCH:$CIRCLE_PROJECT_REPONAME \
+              -Dsonar.sources=src
+              -Dsonar.host.url=https://sonarcloud.io/ \
+              -Dsonar.login=$SONAR_TOKEN
+              -Dsonar.organization=st10091991
+
+workflows:
+  version: 2
+  build-and-test:
+    jobs:
+      - scan:
+          context: sonarqube
