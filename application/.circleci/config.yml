@@ -14,8 +14,8 @@ jobs:
     steps:
       - checkout
       - run:
-        name: Navigate to app folder
-        command: cd application
+          name: Navigate to app folder
+          command: cd application
       - run:
           name: Install dependencies
           command: npm install
@@ -29,8 +29,8 @@ jobs:
     steps:
       - checkout
       - run:
-        name: Navigate to app folder
-        command: cd application
+          name: Navigate to app folder
+          command: cd application
       - run:
           name: Install SonarQube Scanner via npm
           command: npm install sonarqube-scanner --save-dev
