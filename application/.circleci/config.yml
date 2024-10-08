@@ -5,7 +5,7 @@ executors:
     docker:
       # Use a Node.js image since you're working with a Create React App
       - image: cimg/node:16.17
-    working_directory: ~/repo/application
+    working_directory: ../repo
 
 jobs:
   # Job to run tests for the React app
